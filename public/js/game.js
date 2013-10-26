@@ -6,7 +6,7 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
 	localPlayer,	// Local player
 	remotePlayers,	// Remote players
-	socket;			// Socket connection
+	socket,localball;			// Socket connection
 
 
 /**************************************************
@@ -29,9 +29,17 @@ function init() {
 	// placed right on the egde of the screen
 	var startX = Math.round(Math.random()*(canvas.width-5)),
 		startY = Math.round(Math.random()*(canvas.height-5));
-
+	/********************************/
+	var ballX=window.innerWidth/2;
+	var ballY=window.innerHeight/2;
+	/********************************/
+	
 	// Initialise the local player
 	localPlayer = new Player(startX, startY);
+	/********************************/
+	localball= new Ball(ballX,ballY);
+	/********************************/
+
 
 	// Initialise socket connection
 	socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
@@ -180,12 +188,16 @@ function draw() {
 
 	// Draw the local player
 	localPlayer.draw(ctx);
+	localball.update(localPlayer.getX(),localPlayer.getY())
+	localball.draw(ctx);
 
 	// Draw the remote players
 	var i;
 	for (i = 0; i < remotePlayers.length; i++) {
 		remotePlayers[i].draw(ctx);
+	localball.update(remotePlayers[i].getX(),remotePlayers[i].getY())
 	};
+	localball.draw(ctx);
 };
 
 
