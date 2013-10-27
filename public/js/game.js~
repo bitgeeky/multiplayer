@@ -8,9 +8,8 @@ var canvas,			// Canvas DOM element
 	remotePlayers,	// Remote players
 	socket,localball;			// Socket connection
 var leftscr=0,rightscr=0;
-var timestr;
 // set the date we're counting down to
-var target_date = new Date(new Date().getTime()+5*60000).getTime();
+var target_date = new Date("Aug 15, 2019").getTime();
  
 // variables for time units
 var days, hours, minutes, seconds;
@@ -36,7 +35,8 @@ setInterval(function () {
     seconds = parseInt(seconds_left % 60);
      
     // format countdown string + set tag value
-    timestr = minutes + " m : " + seconds+" s" ;  
+    countdown.innerHTML = days + "d, " + hours + "h, "
+    + minutes + "m, " + seconds + "s";  
  
 }, 1000);
 
@@ -237,11 +237,8 @@ function draw() {
 	ctx.fillStyle = "rgb(0,255,255)";
 	ctx.fillRect(0,canvas.height-15,canvas.width,15);
 	ctx.fillStyle = "blue";
-	ctx.font = 'italic 30pt Calibri';
+	ctx.font = 'italic 40pt Calibri';
       	ctx.fillText(leftscr.toString()+" | "+rightscr.toString(), canvas.width/2-20, 60);
-	ctx.fillStyle = "blue";
-	ctx.font = '30pt Calibri';
-      	ctx.fillText(timestr,canvas.width/2-20, canvas.height-30);
 	// Draw the local player
 	if(localball.getX()<25&&((canvas.height/4)<=localball.getY()<=(3*(canvas.height/4)))){
 		localball.reset(canvas.width/2,canvas.height/2);
