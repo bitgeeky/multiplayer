@@ -64,8 +64,8 @@ function init() {
 	// Calculate a random start position for the local player
 	// The minus 5 (half a player size) stops the player being
 	// placed right on the egde of the screen
-	var startX = Math.round(Math.random()*(canvas.width-5)),
-		startY = Math.round(Math.random()*(canvas.height-5));
+	var startX = Math.round(Math.random()*(canvas.width-25)),
+		startY = Math.round(Math.random()*(canvas.height-25));
 	/********************************/
 	var ballX=window.innerWidth/2;
 	var ballY=window.innerHeight/2;
@@ -114,6 +114,7 @@ var setEventHandlers = function() {
 
 	// Player removed message received
 	socket.on("remove player", onRemovePlayer);
+	socket.on("move ball",onMoveBall);
 };
 
 // Keyboard key down
@@ -175,8 +176,10 @@ function onMovePlayer(data) {
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
-	localball.update(movePlayer.getX(),movePlayer.getY());
-	localball.draw(ctx);
+};
+function onMoveBall(data){
+	localball.setX(data.x);
+	localball.setY(data.y);	
 };
 
 // Remove player
@@ -213,10 +216,17 @@ function update() {
 	// Update local player and check for change
 	if (localPlayer.update(keys)) {
 		// Send local player data to the game server
-		localball.update(localPlayer.getX(),localPlayer.getY());
-		localball.draw(ctx);
 		socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
 	};
+	
+	/*####################################################*/
+
+	if(localball.update(localPlayer.getX(),localPlayer.getY()))
+	{
+	socket.emit("move ball",{x:localball.getX(),y:localball.getY()});
+	}
+
+	/*####################################################*/
 };
 
 
@@ -242,6 +252,18 @@ function draw() {
 	ctx.fillStyle = "blue";
 	ctx.font = '30pt Calibri';
       	ctx.fillText(timestr,canvas.width/2-20, canvas.height-30);
+		
+	var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var radius = canvas.width/10;
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      ctx.fillStyle = 'green';
+      ctx.fill();
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#003300';
+      ctx.stroke();	
 	// Draw the local player
 	if(localball.getX()<25&&((canvas.height/4)<=localball.getY()<=(3*(canvas.height/4)))){
 		localball.reset(canvas.width/2,canvas.height/2);
@@ -258,17 +280,13 @@ function draw() {
 		
 	}
 	localPlayer.draw(ctx);
-	localball.update(localPlayer.getX(),localPlayer.getY())
 	localball.draw(ctx);
 
 	// Draw the remote players
 	var i;
 	for (i = 0; i < remotePlayers.length; i++) {
 		remotePlayers[i].draw(ctx);
-	localball.update(remotePlayers[i].getX(),remotePlayers[i].getY());
-	localball.draw(ctx);
 	};
-	localball.draw(ctx);
 };
 
 

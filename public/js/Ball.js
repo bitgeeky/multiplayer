@@ -26,30 +26,7 @@ var Ball = function(startX,startY){
 	};
 	// Update Ball position
 	var update = function(px,py){
-		/*if(px<x&&py<y){
-			if(Math.abs(px-x)<3||Math.abs(py-y)<3){
-			x+=moveAmount;
-			y+=moveAmount;
-			}
-		}	
-		else if(px>x&&py<y){
-			if(Math.abs(px-x)<3||Math.abs(py-y)<3){
-			x-=moveAmount;
-			y+=moveAmount;
-			}
-		}	
-		else if(px<x&&py>y){
-			if(Math.abs(px-x)<3||Math.abs(py-y)<3){
-			x+=moveAmount;
-			y-=moveAmount;
-			}
-		}	
-		else if(px>x&&py>y){
-			if(Math.abs(px-x)<3||Math.abs(py-y)<3){
-			x-=moveAmount;
-			y-=moveAmount;
-			}
-		}	*/
+		var prevX=x,prevY=y;
 		if( Math.abs(px-x)<=20 && Math.abs(py-y)<=20)
 		{
 			var power = 5;
@@ -61,17 +38,20 @@ var Ball = function(startX,startY){
 			//y+=(dy*power);
 			x+=(dx*power);
 			y+=(dy*power);
+			console.log("m in");
 		}
+		return (prevX!=x || prevY!=y)? true : false;
 	};
 	var draw = function(ctx){
 		if(ballready){
-			ctx.drawImage(ballimage,x,y);
+			ctx.drawImage(ballimage,x-5,y-5);
 		}	
 	};	
 	return{
 		getX: getX,
 		getY: getY,
-		setX: setY,
+		setX: setX,
+		setY: setY,
 		update: update,
 		reset: reset,
 		draw: draw
