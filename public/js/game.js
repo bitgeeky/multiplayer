@@ -7,11 +7,17 @@ var canvas,			// Canvas DOM element
 	localPlayer,	// Local player
 	remotePlayers,	// Remote players
 	socket,localball;			// Socket connection
-
+var leftscr=0,rightscr=0;
 
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
+var bgready=false;
+var bgimage= new Image();
+bgimage.onload = function(){
+	bgready=true;		
+};
+bgimage.src = "images/field.svg";
 function init() {
 	// Declare the canvas and rendering context
 	canvas = document.getElementById("gameCanvas");
@@ -139,6 +145,7 @@ function onMovePlayer(data) {
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
 	localball.update(movePlayer.getX(),movePlayer.getY());
+	localball.draw(ctx);
 };
 
 // Remove player
@@ -175,8 +182,9 @@ function update() {
 	// Update local player and check for change
 	if (localPlayer.update(keys)) {
 		// Send local player data to the game server
-		socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
 		localball.update(localPlayer.getX(),localPlayer.getY());
+		localball.draw(ctx);
+		socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
 	};
 };
 
@@ -186,25 +194,52 @@ function update() {
 **************************************************/
 function draw() {
 	// Wipe the canvas clean
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = "rgb(124,252,0)";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = "rgb(200,0,0)";
+	ctx.fillRect(0,canvas.height/4,40,canvas.height/2);
+	ctx.fillStyle = "rgb(200,0,0)";
+	ctx.fillRect(canvas.width-40,canvas.height/4,40,canvas.height/2);
 
+	ctx.fillStyle = "rgb(0,255,255)";
+	ctx.fillRect(0,0,canvas.width,15);
+	ctx.fillStyle = "rgb(0,255,255)";
+	ctx.fillRect(0,canvas.height-15,canvas.width,15);
+	ctx.fillStyle = "blue";
+	ctx.font = 'italic 40pt Calibri';
+      	ctx.fillText(leftscr.toString()+" | "+rightscr.toString(), canvas.width/2-20, 60);
 	// Draw the local player
+	if(localball.getX()<25&&((canvas.height/4)<=localball.getY()<=(3*(canvas.height/4)))){
+		localball.reset(canvas.width/2,canvas.height/2);
+	//	alert("Right Team Scored A GOAL");
+		rightscr+=1;
+	}
+	else if((localball.getX()>(canvas.width-25))&&((canvas.height/4)<=localball.getY()<=(3*(canvas.height/4)))){
+		localball.reset(canvas.width/2,canvas.height/2);
+	//	alert("Left Team Scored A GOAL");
+		leftscr+=1;
+	}
+	else if((localball.getX()<=0)||(localball.getX()>=canvas.width)||(localball.getY()<=0)||(localball.getY()>=canvas.height)){
+		localball.reset(canvas.width/2,canvas.height/2);
+		
+	}
 	localPlayer.draw(ctx);
-//	localball.update(localPlayer.getX(),localPlayer.getY())
+	localball.update(localPlayer.getX(),localPlayer.getY())
 	localball.draw(ctx);
 
 	// Draw the remote players
 	var i;
 	for (i = 0; i < remotePlayers.length; i++) {
 		remotePlayers[i].draw(ctx);
-//	localball.update(remotePlayers[i].getX(),remotePlayers[i].getY())
+	localball.update(remotePlayers[i].getX(),remotePlayers[i].getY());
+	localball.draw(ctx);
 	};
-//	localball.draw(ctx);
+	localball.draw(ctx);
 };
 
 
 /**************************************************
-** GAME HELPER FUNCTIONS
+** GAME HELPER FUNCTION
 **************************************************/
 // Find player by ID
 function playerById(id) {

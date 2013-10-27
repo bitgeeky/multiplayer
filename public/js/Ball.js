@@ -8,6 +8,10 @@ var Ball = function(startX,startY){
 	var x = startX,y=startY,moveAmount=10;
 	//getters and setters
 	
+	var reset = function(xset,yset){
+		x=xset;
+		y=yset;
+	};
 	var getX = function(){
 		return x;	
 	};
@@ -51,8 +55,8 @@ var Ball = function(startX,startY){
 			var power = 5;
 			var dx = x-px;
 			var dy = y-py;
-			if(dx<5 && dx>-5)dx=0;
-			if(dy<5 && dy>-5)dy=0;
+			if(dx<3 && dx>-3)dx=0;
+			if(dy<3 && dy>-3)dy=0;
 			//x+=(dx*power);
 			//y+=(dy*power);
 			x+=(dx*power);
@@ -69,6 +73,7 @@ var Ball = function(startX,startY){
 		getY: getY,
 		setX: setY,
 		update: update,
+		reset: reset,
 		draw: draw
 	}
 };
