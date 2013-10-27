@@ -46,7 +46,7 @@ var Ball = function(startX,startY){
 			y-=moveAmount;
 			}
 		}	*/
-		if( Math.abs(px-x)<=30 && Math.abs(py-y)<=30)
+		if( Math.abs(px-x)<=20 && Math.abs(py-y)<=20)
 		{
 			var power = 5;
 			var dx = x-px;

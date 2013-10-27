@@ -138,6 +138,7 @@ function onMovePlayer(data) {
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
+	localball.update(movePlayer.getX(),movePlayer.getY());
 };
 
 // Remove player
@@ -175,6 +176,7 @@ function update() {
 	if (localPlayer.update(keys)) {
 		// Send local player data to the game server
 		socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
+		localball.update(localPlayer.getX(),localPlayer.getY());
 	};
 };
 
@@ -188,16 +190,16 @@ function draw() {
 
 	// Draw the local player
 	localPlayer.draw(ctx);
-	localball.update(localPlayer.getX(),localPlayer.getY())
+//	localball.update(localPlayer.getX(),localPlayer.getY())
 	localball.draw(ctx);
 
 	// Draw the remote players
 	var i;
 	for (i = 0; i < remotePlayers.length; i++) {
 		remotePlayers[i].draw(ctx);
-	localball.update(remotePlayers[i].getX(),remotePlayers[i].getY())
+//	localball.update(remotePlayers[i].getX(),remotePlayers[i].getY())
 	};
-	localball.draw(ctx);
+//	localball.draw(ctx);
 };
 
 
