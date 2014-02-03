@@ -27,13 +27,13 @@ var Ball = function(startX,startY){
 	// Update Ball position
 	var update = function(px,py){
 		var prevX=x,prevY=y;
-		if( Math.abs(px-x)<=20 && Math.abs(py-y)<=20)
+		if( Math.abs(px-x)<=25 && Math.abs(py-y)<=40)
 		{
 			var power = 5;
 			var dx = x-px;
 			var dy = y-py;
 			if(dx<3 && dx>-3)dx=0;
-			if(dy<3 && dy>-3)dy=0;
+			if(dy<8 && dy>-8)dy=0;
 			//x+=(dx*power);
 			//y+=(dy*power);
 			x+=(dx*power);
@@ -44,7 +44,7 @@ var Ball = function(startX,startY){
 	};
 	var draw = function(ctx){
 		if(ballready){
-			ctx.drawImage(ballimage,x-5,y-5);
+			ctx.drawImage(ballimage,x-8,y-8);
 		}	
 	};	
 	return{

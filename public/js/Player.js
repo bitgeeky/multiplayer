@@ -57,7 +57,7 @@ var Player = function(startX, startY) {
 	var draw = function(ctx) {
 		if(heroready){
 	//	ctx.fillRect(x-5, y-5, 10, 10);
-		ctx.drawImage(heroimage,x-5,y-5);
+		ctx.drawImage(heroimage,x-7,y-40);
 		}
 	};
 

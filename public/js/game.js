@@ -10,16 +10,15 @@ var canvas,			// Canvas DOM element
 var leftscr=0,rightscr=0;
 var timestr;
 // set the date we're counting down to
-var target_date = new Date(new Date().getTime()+5*60000).getTime();
+var target_date = new Date(new Date().getTime()+20*60000).getTime();
  
 // variables for time units
 var days, hours, minutes, seconds;
- 
+ var snd = new Audio("music/applause-8.mp3"); 
 // get tag element
-var countdown = document.getElementById("countdown");
  
 // update the tag with id "countdown" every 1 second
-setInterval(function () {
+var myvar=setInterval(function () {
  
     // find the amount of "seconds" between now and target
     var current_date = new Date().getTime();
@@ -34,6 +33,10 @@ setInterval(function () {
      
     minutes = parseInt(seconds_left / 60);
     seconds = parseInt(seconds_left % 60);
+	if(target_date==current_date){
+		console.log("enter");
+		clearInterval(refreshIntervalId);
+	}
      
     // format countdown string + set tag value
     timestr = minutes + " m : " + seconds+" s" ;  
@@ -79,7 +82,7 @@ function init() {
 
 
 	// Initialise socket connection
-	socket = io.connect("http://localhost", {port: 8000, transports: ["websocket"]});
+	socket = io.connect("http://10.1.39.111", {port: 8000, transports: ["websocket"]});
 
 	// Initialise remote players array
 	remotePlayers = [];
@@ -268,16 +271,22 @@ function draw() {
 	if(localball.getX()<25&&((canvas.height/4)<=localball.getY()<=(3*(canvas.height/4)))){
 		localball.reset(canvas.width/2,canvas.height/2);
 	//	alert("Right Team Scored A GOAL");
+		snd.play();	
 		rightscr+=1;
 	}
 	else if((localball.getX()>(canvas.width-25))&&((canvas.height/4)<=localball.getY()<=(3*(canvas.height/4)))){
 		localball.reset(canvas.width/2,canvas.height/2);
 	//	alert("Left Team Scored A GOAL");
+		snd.play();	
 		leftscr+=1;
 	}
 	else if((localball.getX()<=0)||(localball.getX()>=canvas.width)||(localball.getY()<=0)||(localball.getY()>=canvas.height)){
 		localball.reset(canvas.width/2,canvas.height/2);
-		
+	}
+	if((localPlayer.getX()<=0)||(localPlayer.getX()>=canvas.width)||(localPlayer.getY()<=0)||(localPlayer.getY()>=canvas.height)){
+	//console.log("out");	
+	localPlayer.setX(canvas.width/2);
+	localPlayer.setY(canvas.height/2);
 	}
 	localPlayer.draw(ctx);
 	localball.draw(ctx);
